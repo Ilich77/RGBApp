@@ -98,9 +98,20 @@ class SettingsViewController: UIViewController {
 extension SettingsViewController: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         guard var valueTF = textField.text else { return }
-        guard var value = Float(valueTF) else { return }
+        guard var value = Float(valueTF) else {
+            showAlert(title: "Error!", message: "Incorrcet input. Example: 0.12.")
+            textField.text = ""
+            return
+            
+        }
         
         if value >= 1 {
+            if value > 1 {
+                showAlert(
+                    title: "Error!",
+                    message: "Number must be less than or equal 1.00"
+                )
+            }
             value = 1
             valueTF = "1.00"
             textField.text = "1.00"
@@ -176,5 +187,17 @@ extension UIColor {
             blue: components[2],
             alpha: components[3]
         )
+    }
+}
+
+// MARK: - Alert Controller
+extension SettingsViewController {
+    private func showAlert(title: String, message: String, textField: UITextField? = nil) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default) { _ in
+            textField?.text = ""
+        }
+        alert.addAction(okAction)
+        present(alert, animated: true)
     }
 }
